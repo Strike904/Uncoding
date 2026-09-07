@@ -1,0 +1,9 @@
+{
+  "name": "uncoding-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "موقع شركة Uncoding مع مساعد ذكاء اصطناعي مدمج",
+  "engines": {
+    "node": ">=18"
+  }
+}

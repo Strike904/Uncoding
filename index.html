@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uncoding — حلول برمجية وذكاء اصطناعي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDEFEA;
+    --paper-raised:#F6F7F3;
+    --ink:#14181B;
+    --ink-soft:#4A5158;
+    --line:#D6D9D2;
+    --accent:#3654FF;
+    --accent-ink:#0E1A66;
+    --moss:#6B7A4F;
+    --add:#3F7A4E;
+    --add-bg:#E4EFE3;
+    --del:#B4483A;
+    --del-bg:#F5E4E1;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    line-height:1.7;
+  }
+  h1,h2,h3{
+    font-family:'El Messiri', 'IBM Plex Sans Arabic', sans-serif;
+    font-weight:700;
+    margin:0;
+  }
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    direction:ltr;
+    display:inline-block;
+  }
+  a{color:inherit;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:20;
+    background:rgba(237,239,234,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 0;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-size:1.2rem; font-weight:700;
+  }
+  .logo .mono{color:var(--accent); font-size:1rem;}
+  nav ul{list-style:none; display:flex; gap:32px; margin:0; padding:0;}
+  nav a{text-decoration:none; color:var(--ink-soft); font-size:0.96rem;}
+  nav a:hover{color:var(--ink);}
+  .nav-cta{
+    background:var(--ink); color:var(--paper);
+    padding:9px 20px; border-radius:var(--radius);
+    font-size:0.9rem; text-decoration:none;
+  }
+
+  /* HERO */
+  .hero{
+    padding:64px 0 80px;
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:56px;
+    align-items:center;
+  }
+  .hero-copy .tag{
+    display:inline-flex; align-items:center; gap:8px;
+    color:var(--add); background:var(--add-bg);
+    padding:5px 12px; border-radius:6px;
+    font-size:0.85rem; margin-bottom:22px;
+  }
+  .hero-copy h1{
+    font-size:2.9rem; line-height:1.28; letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+  .hero-copy h1 .accentline{color:var(--accent);}
+  .hero-copy p{
+    color:var(--ink-soft); font-size:1.08rem; max-width:46ch;
+    margin-top:20px;
+  }
+  .hero-actions{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--accent); color:#fff; border:none;
+    padding:13px 26px; border-radius:var(--radius);
+    font-size:0.98rem; font-weight:600; cursor:pointer;
+    text-decoration:none; display:inline-block;
+  }
+  .btn-ghost{
+    background:transparent; color:var(--ink);
+    border:1px solid var(--line);
+    padding:13px 26px; border-radius:var(--radius);
+    font-size:0.98rem; text-decoration:none; display:inline-block;
+  }
+
+  /* CHAT PANEL (hero centerpiece) */
+  .chat-shell{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 1px 0 rgba(0,0,0,0.02);
+  }
+  .chat-top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .chat-top .dots{display:flex; gap:6px;}
+  .chat-top .dots span{width:9px; height:9px; border-radius:50%; background:var(--line);}
+  .chat-top .path{color:var(--ink-soft); font-size:0.8rem;}
+  .chat-body{
+    height:340px;
+    overflow-y:auto;
+    padding:18px;
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .msg{max-width:88%; padding:10px 14px; border-radius:12px; font-size:0.94rem;}
+  .msg.bot{
+    background:#fff; border:1px solid var(--line);
+    align-self:flex-start; border-bottom-left-radius:4px;
+  }
+  .msg.user{
+    background:var(--accent); color:#fff;
+    align-self:flex-end; border-bottom-right-radius:4px;
+  }
+  .msg.pending{color:var(--ink-soft); font-style:italic;}
+  .chat-input-row{
+    display:flex; gap:8px; padding:14px; border-top:1px solid var(--line);
+    background:var(--paper-raised);
+  }
+  .chat-input-row input{
+    flex:1; border:1px solid var(--line); border-radius:8px;
+    padding:11px 14px; font-family:inherit; font-size:0.95rem;
+    background:#fff; color:var(--ink);
+  }
+  .chat-input-row button{
+    background:var(--ink); color:#fff; border:none;
+    padding:0 20px; border-radius:8px; font-weight:600; cursor:pointer;
+  }
+  .chat-input-row button:disabled{opacity:0.5; cursor:default;}
+  .chat-limit-note{
+    text-align:center; color:var(--ink-soft); font-size:0.75rem;
+    padding:0 14px 12px; direction:rtl;
+  }
+
+  /* DIFF-STYLE SECTION LABELS */
+  .section-label{
+    display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  }
+  .section-label .marker{
+    font-family:'JetBrains Mono', monospace;
+    width:22px; height:22px; border-radius:5px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.9rem; flex-shrink:0;
+  }
+  .marker.plus{background:var(--add-bg); color:var(--add);}
+  .marker.minus{background:var(--del-bg); color:var(--del);}
+  .section-label span.txt{color:var(--ink-soft); font-size:0.95rem;}
+
+  section{padding:70px 0;}
+  section.bordered{border-top:1px solid var(--line);}
+
+  .diff-row{
+    display:grid; grid-template-columns:auto 1fr; gap:14px;
+    padding:16px 0; border-bottom:1px dashed var(--line);
+  }
+  .diff-row:last-child{border-bottom:none;}
+  .diff-row .marker{margin-top:4px;}
+  .diff-row h3{font-size:1.15rem; margin-bottom:6px;}
+  .diff-row p{color:var(--ink-soft); margin:0; max-width:62ch; font-size:0.98rem;}
+
+  .services-head{
+    display:grid; grid-template-columns:1fr auto; align-items:end; gap:20px; margin-bottom:36px;
+  }
+  .services-head h2{font-size:2rem;}
+  .services-head p{color:var(--ink-soft); max-width:48ch; margin-top:10px;}
+
+  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .service-card{
+    background:var(--paper-raised); border:1px solid var(--line);
+    border-radius:12px; padding:26px;
+  }
+  .service-card .mono{color:var(--moss); font-size:0.82rem; margin-bottom:16px; display:block;}
+  .service-card h3{font-size:1.1rem; margin-bottom:10px;}
+  .service-card p{color:var(--ink-soft); font-size:0.94rem; margin:0;}
+
+  .stats-strip{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--line); border-radius:14px;
+    background:var(--paper-raised); overflow:hidden;
+  }
+  .stat{padding:26px 20px; border-inline-start:1px solid var(--line); text-align:center;}
+  .stat:first-child{border-inline-start:none;}
+  .stat .num{font-family:'JetBrains Mono', monospace; font-size:1.6rem; color:var(--accent); font-weight:500;}
+  .stat .lbl{color:var(--ink-soft); font-size:0.85rem; margin-top:6px;}
+
+  .contact-panel{
+    background:var(--ink); color:var(--paper);
+    border-radius:18px; padding:52px;
+    display:grid; grid-template-columns:1.2fr 1fr; gap:40px; align-items:center;
+  }
+  .contact-panel h2{color:#fff; font-size:1.9rem; line-height:1.35;}
+  .contact-panel p{color:#B9BEC1; margin-top:14px; max-width:44ch;}
+  .contact-form{display:flex; flex-direction:column; gap:12px;}
+  .contact-form input, .contact-form textarea{
+    background:#1E2327; border:1px solid #2E353A; color:#fff;
+    border-radius:8px; padding:12px 14px; font-family:inherit; font-size:0.95rem;
+  }
+  .contact-form button{
+    background:var(--accent); color:#fff; border:none;
+    padding:13px; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.98rem;
+  }
+
+  footer{padding:36px 0; border-top:1px solid var(--line);}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;}
+  footer .mono{color:var(--ink-soft); font-size:0.82rem;}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr; padding-top:36px;}
+    .grid-3{grid-template-columns:1fr;}
+    .stats-strip{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(3){border-inline-start:none;}
+    .contact-panel{grid-template-columns:1fr; padding:32px;}
+    nav ul{display:none;}
+    .services-head{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="logo">Uncoding <span class="mono">/ai</span></div>
+      <ul>
+        <li><a href="#services">الحلول</a></li>
+        <li><a href="#about">من نحن</a></li>
+        <li><a href="#contact">تواصل</a></li>
+      </ul>
+      <a href="#chat" class="nav-cta">جرّب المساعد</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap" id="chat">
+    <div class="hero-copy">
+      <span class="tag"><span class="mono">+</span> ذكاء اصطناعي يشتغل فعلياً، مو بس عرض</span>
+      <h1>نفكّ تعقيد المشاكل البرمجية،<br>ونبنيها من <span class="accentline">جديد بذكاء</span>.</h1>
+      <p>Uncoding شركة حلول برمجية وذكاء اصطناعي. نصمم ونبني أنظمة وواجهات ومساعدين ذكيين مخصصين لشركتك — من الفكرة إلى الإطلاق.</p>
+      <div class="hero-actions">
+        <a href="#services" class="btn-primary">شوف الحلول</a>
+        <a href="#contact" class="btn-ghost">تواصل وياا</a>
+      </div>
+    </div>
+
+    <div class="chat-shell">
+      <div class="chat-top">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="path mono">uncoding — assistant.ai</div>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="msg bot">هلا فيك! أنا مساعد Uncoding الذكي. اسألني عن خدماتنا، أو جرّب وش نقدر نسوي لشركتك.</div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="اكتب سؤالك هنا..." autocomplete="off">
+        <button id="chatSend">إرسال</button>
+      </div>
+      <div class="chat-limit-note mono" id="chatLimitNote">15 رسالة متبقية اليوم</div>
+    </div>
+  </section>
+<footer>
+  <div class="wrap">
+    <div class="logo" style="font-size:1rem;">Uncoding</div>
+    <div class="mono">© 2026 uncoding · solutions &amp; ai</div>
+  </div>
+</footer>
+
+<script>
+const chatBody = document.getElementById('chatBody');
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+const chatLimitNote = document.getElementById('chatLimitNote');
+
+// ملاحظة: النموذج ومفتاح الـ API محددين بالسيرفر (api/chat.js)، مو هنا.
+// هذا يخلي المفتاح مخفي تماماً عن أي شخص يفتح مصدر الصفحة.
+const DAILY_LIMIT = 15;
+
+function getTodayKey(){
+  return 'uncoding_chat_count_' + new Date().toISOString().slice(0,10);
+}
+
+function getRemaining(){
+  const used = parseInt(localStorage.getItem(getTodayKey()) || '0', 10);
+  return Math.max(0, DAILY_LIMIT - used);
+}
+
+function incrementUsage(){
+  const key = getTodayKey();
+  const used = parseInt(localStorage.getItem(key) || '0', 10);
+  localStorage.setItem(key, String(used + 1));
+  updateLimitNote();
+}
+
+function updateLimitNote(){
+  const remaining = getRemaining();
+  chatLimitNote.textContent = remaining > 0
+    ? `${remaining} رسالة متبقية اليوم`
+    : 'وصلت الحد اليومي — جرب بكرة، أو تواصل وياا مباشرة';
+  chatSend.disabled = remaining <= 0;
+  chatInput.disabled = remaining <= 0;
+}
+
+function addMessage(text, sender){
+  const div = document.createElement('div');
+  div.className = 'msg ' + sender;
+  div.textContent = text;
+  chatBody.appendChild(div);
+  chatBody.scrollTop = chatBody.scrollHeight;
+  return div;
+}
+
+let history = [];
+
+async function sendMessage(){
+  const text = chatInput.value.trim();
+  if(!text || getRemaining() <= 0) return;
+
+  addMessage(text, 'user');
+  history.push({role:'user', content:text});
+  chatInput.value = '';
+  chatSend.disabled = true;
+
+  const pending = addMessage('...يكتب', 'bot pending');
+
+  try{
+    // نكلم سيرفرنا الخاص، مو Anthropic مباشرة
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: history })
+    });
+
+    if(response.status === 429){
+      pending.textContent = 'وصلت الحد اليومي للرسائل. جرب بكرة 🙏';
+      pending.classList.remove('pending');
+      localStorage.setItem(getTodayKey(), String(DAILY_LIMIT));
+      updateLimitNote();
+      return;
+    }
+
+    const data = await response.json();
+    const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
+    const reply = textBlocks.join('\n') || 'عذراً، ما قدرت أرد الحين. جرب مرة ثانية.';
+    pending.textContent = reply;
+    pending.classList.remove('pending');
+    history.push({role:'assistant', content: reply});
+    incrementUsage();
+  }catch(err){
+    pending.textContent = 'صار خطأ بالاتصال. جرب مرة ثانية.';
+    pending.classList.remove('pending');
+  }finally{
+    if(getRemaining() > 0) chatSend.disabled = false;
+  }
+}
+
+chatSend.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') sendMessage(); });
+updateLimitNote();
+</script>
+
+</body>
+</html>

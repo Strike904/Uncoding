@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>من نحن — Uncoding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDEFEA;
+    --paper-raised:#F6F7F3;
+    --ink:#14181B;
+    --ink-soft:#4A5158;
+    --line:#D6D9D2;
+    --accent:#3654FF;
+    --moss:#6B7A4F;
+    --add:#3F7A4E;
+    --add-bg:#E4EFE3;
+    --del:#B4483A;
+    --del-bg:#F5E4E1;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans Arabic', sans-serif;
+    line-height:1.7;
+    -webkit-text-size-adjust:100%;
+  }
+  h1,h2,h3{
+    font-family:'El Messiri', 'IBM Plex Sans Arabic', sans-serif;
+    font-weight:700;
+    margin:0;
+  }
+  .mono{font-family:'JetBrains Mono', monospace; direction:ltr; display:inline-block;}
+  a{color:inherit;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 20px;}
+
+  header{
+    position:sticky; top:0; z-index:20;
+    background:rgba(237,239,234,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{display:flex; align-items:center; justify-content:space-between; padding:16px 0; gap:12px;}
+  .logo{display:flex; align-items:center; gap:10px; font-size:1.15rem; font-weight:700; flex-shrink:0;}
+  .logo .mono{color:var(--accent); font-size:0.95rem;}
+  nav ul{list-style:none; display:flex; gap:22px; margin:0; padding:0;}
+  nav a{text-decoration:none; color:var(--ink-soft); font-size:0.95rem; white-space:nowrap;}
+  nav a:hover, nav a.active{color:var(--ink);}
+  .nav-cta{background:var(--ink); color:var(--paper); padding:9px 18px; border-radius:var(--radius); font-size:0.88rem; text-decoration:none; flex-shrink:0;}
+
+  section{padding:56px 0;}
+  section.bordered{border-top:1px solid var(--line);}
+
+  .page-hero{padding:52px 0 20px;}
+  .page-hero .tag{
+    display:inline-flex; align-items:center; gap:8px;
+    color:var(--add); background:var(--add-bg);
+    padding:5px 12px; border-radius:6px; font-size:0.82rem; margin-bottom:18px;
+  }
+  .page-hero h1{font-size:2.4rem; line-height:1.3; max-width:18ch;}
+  .page-hero p{color:var(--ink-soft); font-size:1.05rem; max-width:56ch; margin-top:16px;}
+
+  .section-label{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+  .section-label .marker{
+    font-family:'JetBrains Mono', monospace; width:22px; height:22px; border-radius:5px;
+    display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0;
+  }
+  .marker.plus{background:var(--add-bg); color:var(--add);}
+  .marker.minus{background:var(--del-bg); color:var(--del);}
+  .section-label span.txt{color:var(--ink-soft); font-size:0.95rem;}
+
+  .story-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start;}
+  .story-grid h2{font-size:1.8rem; margin-bottom:16px;}
+  .story-grid p{color:var(--ink-soft); font-size:0.98rem; margin-bottom:14px;}
+
+  .diff-row{
+    display:grid; grid-template-columns:auto 1fr; gap:14px;
+    padding:16px 0; border-bottom:1px dashed var(--line);
+  }
+  .diff-row:last-child{border-bottom:none;}
+  .diff-row .marker{margin-top:4px;}
+  .diff-row h3{font-size:1.1rem; margin-bottom:6px;}
+  .diff-row p{color:var(--ink-soft); margin:0; max-width:62ch; font-size:0.96rem;}
+
+  .values-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:32px;}
+  .value-card{background:var(--paper-raised); border:1px solid var(--line); border-radius:12px; padding:24px;}
+  .value-card .mono{color:var(--moss); font-size:0.8rem; margin-bottom:14px; display:block;}
+  .value-card h3{font-size:1.05rem; margin-bottom:8px;}
+  .value-card p{color:var(--ink-soft); font-size:0.92rem; margin:0;}
+
+  .stats-strip{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--line); border-radius:14px;
+    background:var(--paper-raised); overflow:hidden; margin-top:40px;
+  }
+  .stat{padding:22px 14px; border-inline-start:1px solid var(--line); text-align:center;}
+  .stat:first-child{border-inline-start:none;}
+  .stat .num{font-family:'JetBrains Mono', monospace; font-size:1.4rem; color:var(--accent); font-weight:500;}
+  .stat .lbl{color:var(--ink-soft); font-size:0.78rem; margin-top:6px;}
+
+  .cta-band{
+    background:var(--ink); color:#fff; border-radius:18px;
+    padding:44px; text-align:center;
+  }
+  .cta-band h2{color:#fff; font-size:1.6rem; margin-bottom:14px;}
+  .cta-band p{color:#B9BEC1; max-width:48ch; margin:0 auto 24px;}
+  .btn-primary{
+    background:var(--accent); color:#fff; border:none;
+    padding:13px 26px; border-radius:var(--radius);
+    font-size:0.96rem; font-weight:600; cursor:pointer;
+    text-decoration:none; display:inline-flex; align-items:center; min-height:44px;
+  }
+
+  footer{padding:30px 0; border-top:1px solid var(--line);}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;}
+  footer .mono{color:var(--ink-soft); font-size:0.8rem;}
+
+  @media (max-width:900px){
+    .story-grid{grid-template-columns:1fr; gap:24px;}
+    .values-grid{grid-template-columns:1fr;}
+    .stats-strip{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(odd){border-inline-start:none;}
+    .stat{border-bottom:1px solid var(--line);}
+  }
+
+  @media (max-width:640px){
+    .wrap{padding:0 16px;}
+    nav{padding:12px 0;}
+    nav ul{gap:14px;}
+    nav a{font-size:0.86rem;}
+    .logo{font-size:1rem;}
+    .nav-cta{padding:8px 13px; font-size:0.8rem;}
+    section{padding:36px 0;}
+    .page-hero{padding:32px 0 10px;}
+    .page-hero h1{font-size:1.7rem; max-width:none;}
+    .page-hero p{font-size:0.95rem;}
+    .story-grid h2{font-size:1.4rem;}
+    .cta-band{padding:30px 22px;}
+    .cta-band h2{font-size:1.3rem;}
+    .stats-strip{grid-template-columns:1fr 1fr;}
+    footer .wrap{flex-direction:column; align-items:flex-start; gap:8px;}
+  }
+
+  @media (max-width:400px){
+    nav ul{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="logo">Uncoding <span class="mono">/ai</span></div>
+      <ul>
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="index.html#services">الحلول</a></li>
+        <li><a href="about.html" class="active">من نحن</a></li>
+      </ul>
+      <a href="index.html#chat" class="nav-cta">جرّب المساعد</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero wrap">
+    <span class="tag"><span class="mono">i</span> عن الشركة</span>
+    <h1>ذكاء اصطناعي مو زخرفة، حلول تشتغل فعلياً.</h1>
+    <p>Uncoding شركة كويتية متخصصة في الحلول البرمجية وحلول الذكاء الاصطناعي. نبني أنظمة ومساعدين ذكيين مخصصين لكل شركة نشتغل وياها — من الفكرة إلى الإطلاق، وبدون قوالب جاهزة.</p>
+  </section>
+
+  <section class="bordered">
+    <div class="wrap">
+      <div class="story-grid">
+        <div>
+          <div class="section-label"><span class="marker plus mono">+</span><span class="txt">قصتنا</span></div>
+          <h2>ليش "Uncoding"؟</h2>
+          <p>أغلب الشركات تواجه نفس المشكلة: التقنية موجودة، بس معقدة وصعبة توصلها لشغلهم الفعلي. اسمنا يعبّر عن اللي نسويه — نفكّ (Uncode) هذا التعقيد، ونعيد بناءه بطريقة تناسب كل عميل بالضبط.</p>
+          <p>ما نبيع حلول جاهزة نلصقها بأي شركة. كل مشروع نبدأه بفهم شغل العميل الحقيقي، وبعدين نصمم الحل المناسب له — سواء كان مساعد ذكاء اصطناعي، نظام داخلي، أو ربط بين أدوات موجودة.</p>
+        </div>
+        <div>
+          <div class="section-label"><span class="marker minus mono">−</span><span class="txt">طريقتنا</span></div>
+          <h2>مبادئ نشتغل عليها</h2>
+          <div class="diff-row">
+            <span class="marker minus mono">−</span>
+            <div><h3>حلول عامة تصلح لأي أحد</h3><p>يعني ما تصلح لأحد بشكل كامل.</p></div>
+          </div>
+          <div class="diff-row">
+            <span class="marker plus mono">+</span>
+            <div><h3>حل مصمم لشغلك بالضبط</h3><p>نفهم أول، نبني بعدين — مو العكس.</p></div>
+          </div>
+          <div class="diff-row">
+            <span class="marker plus mono">+</span>
+            <div><h3>شفافية بالتكلفة والوقت</h3><p>تعرف وش تدفع وليش، من أول خطوة.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bordered">
+    <div class="wrap">
+      <div class="section-label"><span class="marker plus mono">+</span><span class="txt">قيمنا</span></div>
+      <h2 style="font-size:1.8rem;">وش يميزنا</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <span class="mono">01 · clarity</span>
+          <h3>وضوح قبل كل شي</h3>
+          <p>نشرح لك وش راح نبنيه وليش، بلغة مفهومة بدون تعقيد تقني زايد.</p>
+        </div>
+        <div class="value-card">
+          <span class="mono">02 · craft</span>
+          <h3>اهتمام بالتفاصيل</h3>
+          <p>من تصميم الواجهة لسرعة الاستجابة، كل تفصيلة مدروسة.</p>
+        </div>
+        <div class="value-card">
+          <span class="mono">03 · partnership</span>
+          <h3>شراكة مو مجرد تسليم</h3>
+          <p>نضل معك بعد الإطلاق — تعديل، دعم، وتطوير مستمر.</p>
+        </div>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat"><div class="num mono">24/7</div><div class="lbl">تفاعل مستمر مع الزوار</div></div>
+        <div class="stat"><div class="num mono">&lt;2s</div><div class="lbl">متوسط زمن الرد</div></div>
+        <div class="stat"><div class="num mono">100%</div><div class="lbl">مبني على بياناتك</div></div>
+        <div class="stat"><div class="num mono">1:1</div><div class="lbl">تصميم مخصص لكل عميل</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bordered">
+    <div class="wrap">
+      <div class="cta-band">
+        <h2>تبي تشتغل وياا؟</h2>
+        <p>احكيلنا عن شركتك ووش تحتاج، ونرجع لك بخطة واضحة قبل أي التزام.</p>
+        <a href="index.html#contact" class="btn-primary">تواصل معنا</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="logo" style="font-size:1rem;">Uncoding</div>
+    <div class="mono">© 2026 uncoding · solutions &amp; ai</div>
+  </div>
+</footer>
+
+</body>
+</html>

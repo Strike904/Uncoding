@@ -1,6 +1,7 @@
 // api/chat.js
 // هذا الملف يشتغل على السيرفر فقط (Vercel) — المتصفح ما يشوف محتواه أبداً.
 // مفتاح الـ API مخزن كمتغير بيئة (Environment Variable) وليس داخل الكود.
+// يستخدم Google Gemini (له طبقة مجانية دائمة بدون بطاقة بنكية أو رصيد ينتهي).
 
 const SYSTEM_PROMPT = `أنت المساعد الذكي الرسمي لموقع شركة "Uncoding"، شركة كويتية متخصصة في الحلول البرمجية وحلول الذكاء الاصطناعي.
 خدمات الشركة:
@@ -9,18 +10,16 @@ const SYSTEM_PROMPT = `أنت المساعد الذكي الرسمي لموقع 
 - ربط وأتمتة الأنظمة (واتساب، CRM، قواعد بيانات، إلخ).
 رد دائماً باللهجة الخليجية الودودة والمهنية، بإيجاز ووضوح، وشجّع الزائر يتواصل عبر نموذج التواصل بالموقع لو أبدى اهتمام جاد. لا تختلق تفاصيل أسعار أو مواعيد محددة — قل إن فريق المبيعات يحدد التفاصيل بعد التواصل.`;
 
-// أرخص موديل مناسب لأسئلة عامة عن الشركة
-const MODEL = "claude-haiku-4-5-20251001";
+// موديل Gemini المجاني (Flash) — سريع ومناسب لأسئلة عامة عن الشركة
+const MODEL = "gemini-2.5-flash";
 
-// الحد اليومي المسموح لكل عنوان IP
+// الحد اليومي المسموح لكل عنوان IP (طبقة حماية إضافية فوق حد Google نفسه)
 const DAILY_LIMIT = 15;
 
 // تخزين مؤقت بالذاكرة — يكفي لموقع صغير/متوسط.
-// ملاحظة: هذا يتصفّر أحياناً على Vercel (serverless "cold start").
-// لحماية أدق وأدوم، يفضّل لاحقاً استخدام Upstash Redis (له باقة مجانية أيضاً) — نذكرها بالـ README.
 global.__usageStore = global.__usageStore || {};
 
-function getClientIp(req){
+function getClientIp(req) {
   const fwd = req.headers['x-forwarded-for'];
   if (fwd) return fwd.split(',')[0].trim();
   return req.socket?.remoteAddress || 'unknown';
@@ -48,21 +47,24 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  // تحويل صيغة الرسائل (role/content) إلى الصيغة اللي يفهمها Gemini (role/parts)
+  const geminiContents = messages.map((m) => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 500,
-        system: SYSTEM_PROMPT,
-        messages: messages,
-      }),
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: geminiContents,
+        }),
+      }
+    );
 
     const data = await response.json();
 
@@ -71,8 +73,14 @@ module.exports = async function handler(req, res) {
       return;
     }
 
+    const replyText =
+      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      'عذراً، ما قدرت أرد الحين. جرب مرة ثانية.';
+
     global.__usageStore[usageKey] = currentCount + 1;
-    res.status(200).json(data);
+
+    // نرجّع بنفس الشكل اللي يتوقعه الفرونت إند (index.html) بدون ما نغيّره
+    res.status(200).json({ content: [{ type: 'text', text: replyText }] });
   } catch (err) {
     res.status(500).json({ error: 'صار خطأ بالسيرفر. جرب مرة ثانية.' });
   }

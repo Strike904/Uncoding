@@ -69,6 +69,8 @@ module.exports = async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
+      console.error('GEMINI_ERROR_STATUS:', response.status);
+      console.error('GEMINI_ERROR_BODY:', JSON.stringify(data));
       res.status(response.status).json({ error: 'صار خطأ من مزود الذكاء الاصطناعي.' });
       return;
     }

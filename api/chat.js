@@ -14,7 +14,7 @@ const SYSTEM_PROMPT = `أنت المساعد الذكي الرسمي لموقع 
 const MODEL = "gemini-3.6-flash";
 
 // الحد اليومي المسموح لكل عنوان IP (طبقة حماية إضافية فوق حد Google نفسه)
-const DAILY_LIMIT = 15;
+const DAILY_LIMIT = 50;
 
 // تخزين مؤقت بالذاكرة — يكفي لموقع صغير/متوسط.
 global.__usageStore = global.__usageStore || {};

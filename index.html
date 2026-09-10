@@ -1,11 +1,4 @@
-from pathlib import Path
-import re
 
-src = Path("/mnt/data/نص واحد ملصق (5).txt")
-html = src.read_text(encoding="utf-8")
-
-# Replace the existing document with a polished ChatGPT-inspired interface,
-# while preserving the existing /api/chat backend contract.
 new_html = r'''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
